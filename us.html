@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For My Bachu ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      text-align: center;
+      background: linear-gradient(to bottom right, #ffdde1, #ee9ca7);
+      overflow-x: hidden;
+    }
+
+    h1, h2, p {
+      color: #d6336c;
+      text-shadow: 1px 1px 2px #fff;
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    button {
+      padding: 12px 25px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 10px;
+      background: #ff4d6d;
+      color: white;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      background: #ff758f;
+    }
+
+    /* Floating cats */
+    .cat {
+      position: absolute;
+      font-size: 2em;
+      animation: floatCats 6s infinite;
+    }
+
+    @keyframes floatCats {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Memory game */
+    .memory-game {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-gap: 10px;
+      justify-content: center;
+    }
+
+    .card {
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2em;
+      cursor: pointer;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Fireworks hearts */
+    .heart {
+      position: fixed;
+      font-size: 2em;
+      animation: fly 1s linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes fly {
+      from { transform: translateY(0) scale(1); opacity: 1; }
+      to { transform: translateY(-200px) scale(1.5); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Cats -->
+  <div class="cat" style="top:10%; left:5%;">🐱</div>
+  <div class="cat" style="top:30%; right:10%;">😺</div>
+  <div class="cat" style="bottom:20%; left:15%;">🐈</div>
+  <div class="cat" style="bottom:15%; right:20%;">😻</div>
+
+  <!-- Section 1: Memory Game -->
+  <section id="gameSection">
+    <h1>Hi Bachu ❤️</h1>
+    <p>First, play this cute memory game 🐱</p>
+    <div class="memory-game" id="memoryGame"></div>
+    <p id="gameMsg"></p>
+  </section>
+
+  <!-- Section 2: Tap for Love -->
+  <section id="loveSection" style="display:none;">
+    <h2>Tap to get your love back 💕</h2>
+    <button onclick="showApology()">Tap Here</button>
+  </section>
+
+  <!-- Section 3: Apology -->
+  <section id="apologySection" style="display:none;">
+    <h2>My Dearest Bachu ❤️</h2>
+    <p>
+      I am truly sorry for everything… I know I made mistakes,  
+      and I accept all my faults without excuses.  
+      Please forgive me, Bachu 🥺💖  
+    </p>
+    <button onclick="nextSection()">Tap here to proceed ➡️</button>
+  </section>
+
+  <!-- Section 4: Final Message -->
+  <section id="finalSection" style="display:none;">
+    <h2>💔 My Final Words 💔</h2>
+    <p>
+      I know everyone has hurt you till now, and sadly I am one of them...  
+      But I promise you, Bachu, from this moment onwards, I will never let you feel alone.  
+      I will hold your hand in every storm, laugh with you in every sunshine,  
+      and love you a little more every single day. ❤️  
+    </p>
+    <h2>Will you forgive me, my Bachu? 🥺💕</h2>
+
+    <div>
+      <button id="yesBtn" onclick="yesClicked()">Yes 💕</button>
+      <button id="noBtn" onclick="noClicked()">No 😢</button>
+    </div>
+
+    <p id="responseMsg" style="margin-top:20px; font-size:1.2em;"></p>
+  </section>
+
+  <script>
+    // MEMORY GAME
+    const emojis = ["🐱","🐱","😺","😺","🐈","🐈","😻","😻"];
+    let shuffled = emojis.sort(() => 0.5 - Math.random());
+    let gameBoard = document.getElementById("memoryGame");
+    let first = null, second = null, lock = false, matches = 0;
+
+    shuffled.forEach((emoji, i) => {
+      let card = document.createElement("div");
+      card.classList.add("card");
+      card.dataset.emoji = emoji;
+      card.innerHTML = "❓";
+      card.onclick = () => {
+        if (lock || card.innerHTML !== "❓") return;
+        card.innerHTML = emoji;
+        if (!first) {
+          first = card;
+        } else {
+          second = card;
+          lock = true;
+          if (first.dataset.emoji === second.dataset.emoji) {
+            matches++;
+            first = null; second = null; lock = false;
+            if (matches === emojis.length/2) {
+              document.getElementById("gameMsg").innerText = "Yay! You did it Bachu 🎉💖";
+              setTimeout(() => {
+                document.getElementById("gameSection").style.display = "none";
+                document.getElementById("loveSection").style.display = "flex";
+              }, 1500);
+            }
+          } else {
+            setTimeout(() => {
+              first.innerHTML = "❓";
+              second.innerHTML = "❓";
+              first = null; second = null; lock = false;
+            }, 800);
+          }
+        }
+      };
+      gameBoard.appendChild(card);
+    });
+
+    // SECTIONS
+    function showApology() {
+      document.getElementById("loveSection").style.display = "none";
+      document.getElementById("apologySection").style.display = "flex";
+    }
+
+    function nextSection() {
+      document.getElementById("apologySection").style.display = "none";
+      document.getElementById("finalSection").style.display = "flex";
+    }
+
+    // YES / NO INTERACTION
+    let noClickCount = 0;
+    function yesClicked() {
+      document.getElementById("responseMsg").innerHTML =
+        "Yay! My Bachu forgave me ❤️ I love you soooo much 😘";
+      // Fireworks hearts
+      for (let i=0; i<20; i++) {
+        let heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.top = (window.innerHeight - 50) + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1000);
+      }
+    }
+
+    function noClicked() {
+      noClickCount++;
+      let msg = document.getElementById("responseMsg");
+      let noBtn = document.getElementById("noBtn");
+
+      if (noClickCount === 1) {
+        msg.innerHTML = "But Bachu, please na 🥺 I really really love you!";
+      } else if (noClickCount === 2) {
+        msg.innerHTML = "Please naaa 😭 I love you... think again ❤️";
+      } else {
+        // Make the No button run away
+        noBtn.style.position = "absolute";
+        noBtn.style.transition = "0.3s";
+        noBtn.onmouseover = function () {
+          let x = Math.floor(Math.random() * (window.innerWidth - 100));
+          let y = Math.floor(Math.random() * (window.innerHeight - 50));
+          noBtn.style.left = x + "px";
+          noBtn.style.top = y + "px";
+        };
+        msg.innerHTML = "Hehe 😆 Now you can't press No anymore, Bachu! 💖";
+      }
+    }
+  </script>
+</body>
+</html>
